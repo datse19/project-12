@@ -8,7 +8,7 @@ const {authenticateUser} = require('./middleware/auth-user');
 const router = express.Router();
 
 
-//handler function to wrap each route/middleware
+//handler function 
 function asyncHandler(cb){
     return async(req, res, next) => {
         try{
@@ -21,17 +21,16 @@ function asyncHandler(cb){
 }
 
 //User Routes//
-//Route that will GET all properties and values from current user with 200 status code
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
     const user = req.currentUser;
-    res.status(200).json({  //resource - workshop
+    res.status(200).json({  
         firstName: user.firstName,
         lastName: user.lastName,
         emailAddress: user.emailAddress
     });
 }));
 
-//Route that will POST or create new user, set location, and return 201 status code with no content
+
 router.post('/users', asyncHandler(async (req, res) => {
     try {
         await User.create(req.body);
@@ -48,10 +47,9 @@ router.post('/users', asyncHandler(async (req, res) => {
 
 
 //Courses Routes//
-//Route that will GET all courses with associated user and 200 status code
 router.get('/courses', asyncHandler(async(req, res) => {
-    const courses = await Course.findAll({      //API reference website
-        attributes: {exclude: ['createdAt', 'updatedAt']}, //SlackOverFlow
+    const courses = await Course.findAll({      
+        attributes: {exclude: ['createdAt', 'updatedAt']}, 
         
         include: [{
             model: User,
@@ -66,10 +64,10 @@ router.get('/courses', asyncHandler(async(req, res) => {
     
 }));
 
-//Route that will GET corresponding course with associated user and 200 status code
+
 router.get('/courses/:id', asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id, {
-        attributes: {exclude: ['createdAt', 'updatedAt']}, //SlackOverFlow
+        attributes: {exclude: ['createdAt', 'updatedAt']}, 
         
         include: [{
             model: User, 
@@ -79,7 +77,7 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
     res.status(200).json(course);
 }));
 
-//Route that will POST or create new course, loaction header in URL, and 201 status code
+
 router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     try {
         const course = await Course.create(req.body);
@@ -94,7 +92,7 @@ router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     }
 }));
 
-//Route that will PUT or update course and return 204 status code
+
 router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => { 
     try{
         const course = await Course.findByPk(req.params.id);
@@ -116,7 +114,7 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     }  
 }));
 
-//Route that will DELETE course and return 204 status code
+
 router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     try {
         const course = await Course.findByPk(req.params.id);
